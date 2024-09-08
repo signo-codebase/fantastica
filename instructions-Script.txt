@@ -1,0 +1,15 @@
+Execute Actions:
+
+init: per iniziare a giocare
+
+<allenatore> compra <calciatore> <prezzo>.
+<allenatore> svincola <calciatore>: rende metà dei fm spesi
+<allenatore> rimuove <calciatore>: rende tutti i fm spesi
+
+info <calciatore>
+info <allenatore>: mostra la rosa, fm rimasti e score
+info lega: mostra la lista di tutti i giocatori e il loro score
+
+save: salva lo stato attuale
+load <nome_lega>: carica da un file .pkl (cerca nella directory)
+exit or quit: per uscire
