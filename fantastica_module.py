@@ -255,8 +255,11 @@ class FantaCalciatore(metaclass=SingletonMeta):
 
     def __str__(self):
 
-        fascia_value = self.fascia if self.fascia is not None and not (isinstance(self.fascia, float) and math.isnan(self.fascia)) else "Non specificata"
-
+        if self.fascia is not None and not (isinstance(self.fascia, float) and math.isnan(self.fascia)):
+            fascia_value = int(self.fascia)  # Convert to int if valid
+        else:
+            fascia_value = "Non specificata"  # Default value if it's None or NaN
+    
         return (f'{self.Nome} ({self.ruolo}): quotazione {self.quotazione} fm\n'
                 f'Fascia: {fascia_value}\n'
                 f'Rigorista: {self.rigori}\n'
