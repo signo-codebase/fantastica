@@ -16,7 +16,7 @@ def load_data():
             if 'FVM' in data.columns:
                 ruolo_column = 'Ruolo' if 'Ruolo' in data.columns else 'R'
                 df = pd.DataFrame(data, columns=["Nome", ruolo_column, "FVM"])
-                df['FVM'] = [math.floor(x * 0.5) for x in df['FVM']]
+                df['FVM'] = [math.ceil(x * 0.5) for x in df['FVM']]
                 df.rename(columns={'FVM': 'FM/500'}, inplace=True)
             elif 'FM/500' in data.columns:
                 ruolo_column = 'Ruolo' if 'Ruolo' in data.columns else 'R'
@@ -326,30 +326,42 @@ class Lega:
         else:
             print(f"Errore: Calciatore {calciatore.Nome} non trovato nel DataFrame.")
             return 2  # Player not found
+        
+    def display_svincolati(self, ruolo="tutti"):
 
-# TODO creare il sistema di score dei FantaAllenatori, fare un sort by score, implica aggiungere fasce al df
+        # Filter players who have no team (i.e., squadra is NaN or an empty string)
+        svincolati = self.df[self.df['Stato'] == "Svincolato"]
 
+        # Filter by ruolo if specified
+        if ruolo == "porta" or ruolo == "P":
+            svincolati = svincolati[svincolati['Ruolo'] == 'P']  # Portieri
+        elif ruolo == "difesa" or ruolo == "D":
+            svincolati = svincolati[svincolati['Ruolo'] == 'D']  # Difensori
+        elif ruolo == "centrocampo" or ruolo == "C":
+            svincolati = svincolati[svincolati['Ruolo'] == 'C']  # Centrocampisti
+        elif ruolo == "attacco" or ruolo == "A":
+            svincolati = svincolati[svincolati['Ruolo'] == 'A']  # Attaccanti
 
+        # Sort by Fascia in ascending order, if all roles are selected (ruolo == 0)
+        if ruolo == "tutti":
+            svincolati = svincolati.sort_values(by=['FM/500'], ascending=False)
+        else:
+            svincolati = svincolati.sort_values(by=['Fascia'], ascending=True)
 
-#-------------------------------TEST-------------------------------#
+        # Check if there are no svincolati
+        if svincolati.empty:
+            return "Nessun giocatore svincolato trovato.\n"
 
-#Fantacalcetto = gioca()
+        # Prepare the output string
+        svincolati = svincolati[::-1] # reverse order for better display in CLI
+        result = ""
+        for _, player in svincolati.iterrows():
+            if player['Fascia'] is not None and not (isinstance(player['Fascia'], float) and math.isnan(player['Fascia'])):
+                fascia_value = int(player['Fascia'])  # Convert to int if valid
+            else:
+                fascia_value = "-"  # Default value if it's None or NaN
+            result += f"[{fascia_value}] "
+            result += f"{player['Nome']} ({player['FM/500']}fm)\n"
+            
 
-#Thuram = FantaCalciatore("Thuram", df)
-#Chiesa = FantaCalciatore("Chiesa", df)
-#Dimarco = FantaCalciatore("Dimarco", df)
-
-#print(Dimarco)
-#print(Chiesa)
-#print(Thuram)
-
-#me.compra(Thuram, Thuram.quotazione)
-#me.compra(Chiesa, 45)
-#me.compra(Dimarco, Dimarco.quotazione)
-
-#print(me)
-
-#print(Chiesa)
-
-#me.rimuovi(Thuram)
-#me.svincola(Chiesa)
+        return result.strip()  # Remove trailing newline

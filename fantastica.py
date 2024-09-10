@@ -43,6 +43,7 @@ def process_command(command):
     else:
         action = parts[0]
 
+#---------------------------------INIT------------------------------------------#
 
     if action == "init":
         initialize_league()
@@ -55,6 +56,8 @@ def process_command(command):
             lega.save()
             print(Fore.GREEN + f"Lega salvata in {lega.nome}.pkl" + Style.RESET_ALL)
         return
+    
+#---------------------------------LOAD------------------------------------------#
 
     if action == "load":
         if len(parts) < 2:
@@ -76,18 +79,52 @@ def process_command(command):
         print(Fore.RED + "Devi inizializzare una lega prima di eseguire azioni." + Style.RESET_ALL)
         return
 
+
+#------------------------------------INFO------------------------------------------#
+
+
     # Handle info action
     if action == "info":
-
+        
+        # controllo
         if len(parts) < 2:
-            print(Fore.RED + "Devi specificare un calciatore, allenatore o lega" + Style.RESET_ALL)
+            print(Fore.RED + "Opzioni: allenatore, lega, svincolati, calciatore" + Style.RESET_ALL)
             return
 
+
+        # info allenatore
         if parts[1] in [a.nome for a in lega.allenatori]:
             print(Fore.CYAN + lega.get_allenatore(parts[1]) + Style.RESET_ALL)
             return
+        
+
+        # info lega
         elif parts[1] == "lega":
             print(Fore.CYAN + lega.dettagli() + Style.RESET_ALL)
+
+
+        # info svincolati
+        elif parts[1] == "svincolati":
+
+            if len(parts) == 2:
+                print(Fore.CYAN + lega.display_svincolati() + Style.RESET_ALL)
+                print("\n")
+                return
+            
+            if len(parts) == 3:
+                ruoli = ["porta", "difesa", "centrocampo", "attacco",
+                         "P", "D", "C", "A"]
+                if parts[2] not in ruoli:
+                    print(Fore.RED + f"Ruolo non valido" + Style.RESET_ALL)
+                    return
+                print(Fore.CYAN + lega.display_svincolati(ruolo=parts[2]) + Style.RESET_ALL)
+                print("\n")
+            else:
+                print(Fore.RED + f"Troppi argomenti" + Style.RESET_ALL)
+            return
+        
+
+        # info giocatore
         else:
             calciatore_nome = ' '.join(parts[1:])  # Join the rest of the parts to handle multi-word names
             if calciatore_nome in lega.df['Nome'].values:
@@ -103,6 +140,10 @@ def process_command(command):
             else:
                 print(Fore.RED + f"Calciatore {calciatore_nome} non trovato." + Style.RESET_ALL)
         return
+
+
+#------------------------------------MERCATO------------------------------------------#
+
 
     # Handle compra, svincola, rimuove actions
     if action in ["compra", "svincola", "rimuove"]:

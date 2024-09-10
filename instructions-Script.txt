@@ -9,6 +9,8 @@ init: per iniziare a giocare
 info <calciatore>
 info <allenatore>: mostra la rosa, fm rimasti e score
 info lega: mostra la lista di tutti i giocatori e il loro score
+info svincolati <ruolo>: mostra gli svincolati in ordine di fascia,
+    se ruolo non è specificato mostra gli svincolati in ordine di quotazione
 
 save: salva lo stato attuale
 load <nome_lega>: carica da un file .pkl (cerca nella directory)

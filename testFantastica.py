@@ -66,6 +66,7 @@ class testParserFantastica(unittest.TestCase):
         while commands:
             fantastica.process_command(commands.pop(0))
     
+
     def test_3_info_giocatori(self):
 
         commands = [
@@ -77,8 +78,26 @@ class testParserFantastica(unittest.TestCase):
         "info Sommer",
         "info Thuram",
         "info Simeone",
-        "info Biraghi",
-        "info Vlahovic"
+        "info Vlahovic",
+        "info Biraghi"
+        ]
+
+        while commands:
+            fantastica.process_command(commands.pop(0))
+    
+    def test_4_info_svincolati(self):
+
+        commands = [
+        "info svincolati",
+        "info svincolati porta",
+        "info svincolati difesa",
+        "info svincolati centrocampo",
+        "info svincolati attacco",
+        "info svincolati P",
+        "info svincolati D",
+        "info svincolati C",
+        "info svincolati A",
+        "info svincolati F"
         ]
 
         while commands:
